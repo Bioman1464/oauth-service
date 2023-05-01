@@ -14,17 +14,17 @@ type OauthService interface {
 }
 
 type oauthService struct {
-	accessTokenRepo *ports.OauthAccessTokenRepository
-	clientRepo      *ports.OauthClientRepository
-	scopeRepo       *ports.OauthScopeRepository
-	userRepo        *ports.UserRepository
+	accessTokenRepo ports.OauthAccessTokenRepository
+	clientRepo      ports.OauthClientRepository
+	scopeRepo       ports.OauthScopeRepository
+	userRepo        ports.UserRepository
 }
 
 func NewOauthService(
-	accessTokenRepo *ports.OauthAccessTokenRepository,
-	clientRepo *ports.OauthClientRepository,
-	scopeRepo *ports.OauthScopeRepository,
-	userRepo *ports.UserRepository,
+	accessTokenRepo ports.OauthAccessTokenRepository,
+	clientRepo ports.OauthClientRepository,
+	scopeRepo ports.OauthScopeRepository,
+	userRepo ports.UserRepository,
 ) OauthService {
 	return &oauthService{
 		accessTokenRepo: accessTokenRepo,

@@ -6,8 +6,8 @@ import (
 )
 
 type Provider interface {
-	GetAuthService() *services.AuthService
-	GetOauthService() *services.OauthService
+	GetAuthService() services.AuthService
+	GetOauthService() services.OauthService
 }
 
 type provider struct {
@@ -27,10 +27,10 @@ func NewServiceProvider(repoProvider repo.RepositoryProvider) Provider {
 	}
 }
 
-func (p *provider) GetAuthService() *services.AuthService {
-	return &p.auth
+func (p *provider) GetAuthService() services.AuthService {
+	return p.auth
 }
 
-func (p *provider) GetOauthService() *services.OauthService {
-	return &p.oauth
+func (p *provider) GetOauthService() services.OauthService {
+	return p.oauth
 }

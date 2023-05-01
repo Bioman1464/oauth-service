@@ -8,10 +8,10 @@ import (
 )
 
 type RepositoryProvider interface {
-	GetOauthAccessTokenRepository() *ports.OauthAccessTokenRepository
-	GetOauthClientRepository() *ports.OauthClientRepository
-	GetScopeRepository() *ports.OauthScopeRepository
-	GetUserRepository() *ports.UserRepository
+	GetOauthAccessTokenRepository() ports.OauthAccessTokenRepository
+	GetOauthClientRepository() ports.OauthClientRepository
+	GetScopeRepository() ports.OauthScopeRepository
+	GetUserRepository() ports.UserRepository
 }
 
 var _ RepositoryProvider = (*repositoryProvider)(nil)
@@ -32,18 +32,18 @@ func NewPostgresqlRepositoryProvider(db *sql.DB) RepositoryProvider {
 	}
 }
 
-func (p *repositoryProvider) GetOauthAccessTokenRepository() *ports.OauthAccessTokenRepository {
-	return &p.oauthAccessToken
+func (p *repositoryProvider) GetOauthAccessTokenRepository() ports.OauthAccessTokenRepository {
+	return p.oauthAccessToken
 }
 
-func (p *repositoryProvider) GetOauthClientRepository() *ports.OauthClientRepository {
-	return &p.oauthClient
+func (p *repositoryProvider) GetOauthClientRepository() ports.OauthClientRepository {
+	return p.oauthClient
 }
 
-func (p *repositoryProvider) GetScopeRepository() *ports.OauthScopeRepository {
-	return &p.oauthScope
+func (p *repositoryProvider) GetScopeRepository() ports.OauthScopeRepository {
+	return p.oauthScope
 }
 
-func (p *repositoryProvider) GetUserRepository() *ports.UserRepository {
-	return &p.user
+func (p *repositoryProvider) GetUserRepository() ports.UserRepository {
+	return p.user
 }
