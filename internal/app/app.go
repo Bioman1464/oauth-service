@@ -44,6 +44,7 @@ var app Application
 func Start(ctx context.Context) {
 	app = Application{}
 
+	fmt.Println("Parsing config")
 	cfg, err := parseConfig()
 	if err != nil {
 		log.WithError(err).Fatal("Config parse failed")
@@ -52,6 +53,7 @@ func Start(ctx context.Context) {
 	app.cfg = cfg
 	ctx = context.WithValue(ctx, "app_url", app.cfg.PublicURL)
 
+	fmt.Println("Initializing logger")
 	logger, err := app.logger()
 	if err != nil {
 		log.WithError(err).Fatal("Logger initialization failed")
@@ -67,9 +69,10 @@ func Start(ctx context.Context) {
 		}
 	}()
 
+	app.log.Info("Initializing db connection")
 	db, err := app.database()
 	if err != nil {
-		log.WithError(err).Fatal("Database initialization failed")
+		app.log.WithError(err).Fatal("Database initialization failed")
 	}
 
 	app.postgresqlDB = db
@@ -80,12 +83,13 @@ func Start(ctx context.Context) {
 
 	httpServer, err := app.initHTTPServer(ctx, serviceProvider)
 	if err != nil {
-		log.WithError(err).Fatal("HTTP Server initialization failed")
+		app.log.WithError(err).Fatal("HTTP Server initialization failed")
 	}
 
+	app.log.Info("Starting HTTP server")
 	err = httpServer.Start()
 	if err != nil {
-		log.WithError(err).Fatal("HTTP Server start failed")
+		app.log.WithError(err).Fatal("HTTP Server start failed")
 	}
 
 	//TODO:: graceful shutdown
