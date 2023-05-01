@@ -10,10 +10,10 @@ import (
 )
 
 type Handler struct {
-	oauthService *services.OauthService
+	oauthService services.OauthService
 }
 
-func NewOauthHandler(oauthService *services.OauthService) *Handler {
+func NewOauthHandler(oauthService services.OauthService) *Handler {
 	return &Handler{oauthService}
 }
 
@@ -39,13 +39,25 @@ func (h *Handler) Authorize(ctx *gin.Context) {
 		return
 	}
 
+	//TODO:: validate scopes, clientID
+	//TODO:: get userID from session
+	//TODO:: check authorization if none -> login
+	//TODO::
+
 	ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
 
 func (h *Handler) Token(ctx *gin.Context) {
+	//TODO:: validate request
+	//TODO:: get validate clientID, clientSecret, auth code
+	//TODO:: generate access token, refresh token
+
 	ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
 
 func (h *Handler) Validate(ctx *gin.Context) {
+	//TODO:: get token
+	//TODO:: validate token
+
 	ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
