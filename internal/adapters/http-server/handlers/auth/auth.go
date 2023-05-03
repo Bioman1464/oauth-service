@@ -7,9 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
 
-	"auth-service/internal/handlers/http-server/handlers"
-	"auth-service/internal/handlers/http-server/handlers/auth/requests"
-	"auth-service/internal/handlers/http-server/session"
+	"auth-service/internal/adapters/http-server/handlers"
+	"auth-service/internal/adapters/http-server/handlers/auth/requests"
+	"auth-service/internal/adapters/http-server/session"
 	"auth-service/internal/services"
 )
 

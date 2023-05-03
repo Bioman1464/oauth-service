@@ -9,7 +9,7 @@ import (
 	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 
-	httpserver "auth-service/internal/handlers/http-server"
+	httpserver "auth-service/internal/adapters/http-server"
 	"auth-service/internal/providers/repo"
 	"auth-service/internal/providers/service"
 

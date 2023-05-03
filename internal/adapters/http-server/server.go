@@ -12,10 +12,10 @@ import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 
-	"auth-service/internal/handlers/http-server/handlers"
-	"auth-service/internal/handlers/http-server/handlers/auth"
-	"auth-service/internal/handlers/http-server/handlers/oauth"
-	"auth-service/internal/handlers/http-server/session"
+	"auth-service/internal/adapters/http-server/handlers"
+	"auth-service/internal/adapters/http-server/handlers/auth"
+	"auth-service/internal/adapters/http-server/handlers/oauth"
+	"auth-service/internal/adapters/http-server/session"
 	"auth-service/internal/providers/service"
 )
 

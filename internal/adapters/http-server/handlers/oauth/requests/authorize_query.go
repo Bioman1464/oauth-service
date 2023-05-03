@@ -3,7 +3,7 @@ package requests
 import (
 	"github.com/gin-gonic/gin"
 
-	"auth-service/internal/handlers/http-server/handlers/oauth/errors"
+	"auth-service/internal/adapters/http-server/handlers/oauth/errors"
 )
 
 type AuthorizeQueryRequest struct {
