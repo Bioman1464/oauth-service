@@ -156,5 +156,5 @@ func (a *Application) serviceProvider(provider repo.RepositoryProvider) service.
 }
 
 func (a *Application) initHTTPServer(ctx context.Context, provider service.Provider) (*httpserver.Server, error) {
-	return httpserver.NewServer(ctx, a.cfg.PublicURL, provider)
+	return httpserver.NewServer(ctx, a.cfg.PublicURL, provider, a.log)
 }

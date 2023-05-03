@@ -7,17 +7,19 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
 
-	"auth-service/internal/handlers/http-server/auth/requests"
+	"auth-service/internal/handlers/http-server/handlers"
+	"auth-service/internal/handlers/http-server/handlers/auth/requests"
 	"auth-service/internal/handlers/http-server/session"
 	"auth-service/internal/services"
 )
 
 type Handler struct {
+	handlers.BaseHandler
 	authService services.AuthService
 }
 
-func NewAuthHandler(authService services.AuthService) *Handler {
-	return &Handler{authService}
+func NewAuthHandler(h handlers.BaseHandler, authService services.AuthService) *Handler {
+	return &Handler{h, authService}
 }
 
 func (h *Handler) Login(ctx *gin.Context) {
@@ -106,6 +108,14 @@ func (h *Handler) Logout(ctx *gin.Context) {
 	s := sessions.Default(ctx)
 
 	s.Delete(session.UserID)
+	err := s.Save()
+	if err != nil {
+		h.Log.Error(err)
+
+		ctx.JSON(http.StatusOK, gin.H{"message": "unable to logout"})
+
+		return
+	}
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "success"})
 }

@@ -12,8 +12,9 @@ import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 
-	"auth-service/internal/handlers/http-server/auth"
-	"auth-service/internal/handlers/http-server/oauth"
+	"auth-service/internal/handlers/http-server/handlers"
+	"auth-service/internal/handlers/http-server/handlers/auth"
+	"auth-service/internal/handlers/http-server/handlers/oauth"
 	"auth-service/internal/handlers/http-server/session"
 	"auth-service/internal/providers/service"
 )
@@ -26,13 +27,14 @@ func NewServer(
 	ctx context.Context,
 	address string,
 	provider service.Provider,
+	log *log.Logger,
 ) (*Server, error) {
 	publicURL, err := url.Parse(address)
 	if err != nil {
 		return nil, err
 	}
 
-	router := newRouter(provider, publicURL)
+	router := newRouter(log, provider, publicURL)
 
 	httpServer := &http.Server{
 		Addr:    publicURL.Host,
@@ -47,9 +49,14 @@ func NewServer(
 	}, nil
 }
 
-func newRouter(provider service.Provider, publicURL *url.URL) *gin.Engine {
-	authHandler := auth.NewAuthHandler(provider.GetAuthService())
-	oauthHandler := oauth.NewOauthHandler(provider.GetOauthService())
+func newRouter(
+	log *log.Logger,
+	provider service.Provider,
+	publicURL *url.URL,
+) *gin.Engine {
+	baseHandler := handlers.NewBaseHandler(log)
+	authHandler := auth.NewAuthHandler(baseHandler, provider.GetAuthService())
+	oauthHandler := oauth.NewOauthHandler(baseHandler, provider.GetOauthService())
 
 	router := gin.New()
 	router.Use(gin.Logger())

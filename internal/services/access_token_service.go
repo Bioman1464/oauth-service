@@ -9,8 +9,8 @@ import (
 var _ OauthService = (*oauthService)(nil)
 
 type OauthService interface {
-	Authorize(ctx context.Context)
-	CheckAuthorization(ctx context.Context)
+	Authorize(ctx context.Context, userID string, clientID string, scopes []string) (string, error)
+	CheckAuthorization(ctx context.Context) error
 }
 
 type oauthService struct {
@@ -34,10 +34,12 @@ func NewOauthService(
 	}
 }
 
-func (s *oauthService) Authorize(ctx context.Context) {
+func (s *oauthService) Authorize(ctx context.Context, userID string, clientID string, scopes []string) (string, error) {
 	//TODO::check session
+	return "some code", nil
 }
 
-func (s *oauthService) CheckAuthorization(ctx context.Context) {
+func (s *oauthService) CheckAuthorization(ctx context.Context) error {
 	//TODO:: get user from session
+	panic("Unimplemented")
 }
