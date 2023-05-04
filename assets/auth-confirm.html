@@ -3,8 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <title>OauthConfirm</title>
+    <style>
+        html, body {
+            display: flex;
+            justify-content: center;
+            font-family: Roboto, Arial, sans-serif;
+            font-size: 15px;
+            background: #807777;
+        }
+
+        input[type=text], input[type=password] {
+            width: 100%;
+            padding: 16px 8px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #7b47c4;
+            color: white;
+            padding: 14px;
+            margin: 5px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 14pt;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .formcontainer {
+            text-align: left;
+            margin: 24px 50px 24px;
+            display: flex;
+        }
+
+        .form {
+            background: #cccccc;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .main-container {
+            padding-top: 30%;
+        }
+    </style>
 </head>
 <body>
-    Hello, it's confirm auth page
+<div class="main-container">
+    <div class="form">
+        <h1>Confirm authorization for third party service?</h1>
+        <div class="formcontainer">
+            <button onclick="confirm()">Confirm</button>
+            <button onclick="reject()">Reject</button>
+        </div>
+    </div>
+</div>
 </body>
+<script>
+    function confirm() {
+        const currentURL = new URL(window.location.href)
+        const validateURL = new URL(window.location.origin + "/oauth/authorize")
+
+        currentURL.searchParams.forEach(function (value, key) {
+            validateURL.searchParams.append(key, value)
+        })
+
+        window.location = validateURL.toString()
+    }
+
+    function reject() {
+        const currentURL = new URL(window.location.href)
+        if (currentURL.searchParams.has("redirect_url")) {
+            window.location = currentURL.searchParams.get("redirect_url")
+
+            return
+        }
+
+        alert("Что-то пошло не так")
+    }
+</script>
 </html>

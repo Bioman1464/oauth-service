@@ -29,7 +29,7 @@
             padding: 14px 0;
             margin: 10px 0;
             border: none;
-            cursor: grabbing;
+            cursor: pointer;
             width: 100%;
             border-radius: 5px;
         }
@@ -45,7 +45,11 @@
 
         .formcontainer {
             text-align: left;
-            margin: 24px 50px 12px;
+            margin: 24px 50px 24px;
+        }
+
+        .main-container {
+            padding-top: 30%;
         }
 
         .container {
@@ -72,9 +76,9 @@
     </style>
 </head>
 <body>
-<div>
+<div class="main-container">
     <div class="form">
-        <h1>Hi there</h1>
+        <h1>Authorization</h1>
         <div class="formcontainer">
             <hr/>
             <div class="container">
@@ -99,8 +103,7 @@
         let email = document.getElementById("email").value
         let password = document.getElementById("password").value
 
-        const baseURL = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port;
-        const loginUrl = baseURL + "/api/v1/auth/login"
+        const loginUrl = window.location.origin + "/api/v1/auth/login"
 
         let user = {
             email: email,
@@ -122,10 +125,10 @@
         let response = await loginRequest
         if (response.status === 200) {
             const currentURL = new URL(window.location.href)
-            const confirmURL = new URL(baseURL + "/auth/confirm")
+            const confirmURL = new URL(window.location.origin + "/auth/confirm")
 
             currentURL.searchParams.forEach(function (value, key) {
-                confirmURL.searchParams.append(value, key)
+                confirmURL.searchParams.append(key, value)
             })
 
             window.location = confirmURL.toString()
