@@ -21,6 +21,7 @@ import (
 
 type Server struct {
 	httpServer *http.Server
+	log        *log.Logger
 }
 
 func NewServer(
@@ -46,6 +47,7 @@ func NewServer(
 
 	return &Server{
 		httpServer: httpServer,
+		log:        log,
 	}, nil
 }
 
@@ -101,7 +103,7 @@ func newRouter(
 }
 
 func (s *Server) Start() error {
-	log.Info(fmt.Sprintf("Server starting on addr: %v", s.httpServer.Addr))
+	s.log.Info(fmt.Sprintf("Server starting on addr: %v", s.httpServer.Addr))
 
 	return s.httpServer.ListenAndServe()
 }
