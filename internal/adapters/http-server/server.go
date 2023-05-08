@@ -77,6 +77,7 @@ func newRouter(
 
 	router.StaticFile("/auth/login", "./assets/login.html")
 	router.StaticFile("/auth/confirm", "./assets/auth-confirm.html")
+	router.StaticFile("/auth/error", "./assets/error.html")
 
 	oauthGroup := router.Group("/oauth")
 	{
