@@ -21,8 +21,9 @@ func NewServiceProvider(repoProvider repo.RepositoryProvider) Provider {
 		oauth: services.NewOauthService(
 			repoProvider.GetOauthAccessTokenRepository(),
 			repoProvider.GetOauthClientRepository(),
-			repoProvider.GetScopeRepository(),
+			repoProvider.GetOauthScopeRepository(),
 			repoProvider.GetUserRepository(),
+			repoProvider.GetOauthAuthorizationCodeRepository(),
 		),
 	}
 }
