@@ -1,7 +1,13 @@
 package domain
 
-import "github.com/gofrs/uuid"
+import (
+	"time"
+
+	"github.com/gofrs/uuid"
+)
 
 type OauthScope struct {
-	id uuid.UUID
+	id        uuid.UUID
+	value     string
+	createdAt time.Time
 }
