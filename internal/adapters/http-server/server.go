@@ -69,7 +69,7 @@ func newRouter(
 		Path:     "/",
 		Domain:   publicURL.Host,
 		MaxAge:   60 * 60 * 24,
-		Secure:   true,
+		Secure:   false,
 		HttpOnly: true,
 		SameSite: http.SameSiteNoneMode,
 	})
@@ -79,6 +79,7 @@ func newRouter(
 	router.StaticFile("/auth/confirm", "./assets/auth-confirm.html")
 	router.StaticFile("/auth/error", "./assets/error.html")
 
+	//TODO:: add Cache-Control no-store header
 	oauthGroup := router.Group("/oauth")
 	{
 		oauthGroup.GET("/authorize", oauthHandler.Authorize)

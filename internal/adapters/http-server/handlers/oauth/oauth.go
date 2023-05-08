@@ -2,13 +2,16 @@ package oauth
 
 import (
 	"net/http"
-	"strings"
+	"time"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/gofrs/uuid"
 
 	"auth-service/internal/adapters/http-server/handlers"
+	oauthErr "auth-service/internal/adapters/http-server/handlers/oauth/errors"
 	"auth-service/internal/adapters/http-server/handlers/oauth/requests"
+	"auth-service/internal/adapters/http-server/handlers/oauth/responses"
 	"auth-service/internal/adapters/http-server/session"
 	"auth-service/internal/services"
 )
@@ -26,16 +29,13 @@ func (h *Handler) Authorize(ctx *gin.Context) {
 	var req requests.AuthorizeQueryRequest
 
 	if err := req.Parse(ctx); err != nil {
-		//TODO:: redirect to front error page
+		ctx.Redirect(http.StatusFound, "/auth/error")
 
 		return
 	}
 
 	if err := req.Validate(); err != nil {
-		h.Log.Info(req)
-
-		ctx.Header("Cache-Control", "no-store")
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid_request"})
+		errResponse(ctx, oauthErr.ErrInvalidRequest, err)
 
 		return
 	}
@@ -43,38 +43,66 @@ func (h *Handler) Authorize(ctx *gin.Context) {
 	s := sessions.Default(ctx)
 	userID, ok := s.Get(session.UserID).(string)
 	if !ok {
-		ctx.Header("Cache-Control", "no-store")
 		ctx.Redirect(http.StatusFound, "/auth/login")
 
 		return
 	}
 
-	scopeArr := strings.Split(req.State, ",")
-
-	code, err := h.oauthService.Authorize(ctx, userID, req.ClientID, scopeArr)
+	userUUID, err := uuid.FromString(userID)
 	if err != nil {
-		ctx.Header("Cache-Control", "no-store")
-		ctx.JSON(http.StatusBadRequest, "some error")
+		errResponse(ctx, oauthErr.ErrServerError, err)
 
 		return
 	}
 
-	//TODO:: validate scopes, clientID
-	//TODO:: get userID from session
+	clientUUID, err := uuid.FromString(req.ClientID)
+	if err != nil {
+		errResponse(ctx, oauthErr.ErrServerError, err)
 
-	data := make(map[string]string)
-	data["code"] = code
-	data["state"] = req.State
+		return
+	}
 
-	ctx.JSON(http.StatusOK, gin.H{"data": data})
+	code, err := h.oauthService.Authorize(ctx, userUUID, clientUUID, req.Scope)
+	if err != nil {
+		errResponse(ctx, oauthErr.ErrServerError, err)
+
+		return
+	}
+
+	response := responses.AuthorizationResponse{
+		Code:  code,
+		State: req.State,
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"data": response})
 }
 
 func (h *Handler) Token(ctx *gin.Context) {
+	var req requests.TokenRequest
+
+	if err := req.Parse(ctx); err != nil {
+		errResponse(ctx, oauthErr.ErrInvalidRequest, err)
+
+		return
+	}
+
+	if err := req.Validate(); err != nil {
+		errResponse(ctx, oauthErr.ErrInvalidRequest, err)
+
+		return
+	}
+
 	//TODO:: validate request
 	//TODO:: get validate clientID, clientSecret, auth code
 	//TODO:: generate access token, refresh token
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
+	ctx.JSON(http.StatusOK, gin.H{
+		"access_token":  "some token",
+		"token_type":    "Bearer",
+		"expires_id":    time.Now(),
+		"refresh_token": "some refresh token",
+		"scope":         "some scope",
+	})
 }
 
 func (h *Handler) Validate(ctx *gin.Context) {
@@ -82,4 +110,24 @@ func (h *Handler) Validate(ctx *gin.Context) {
 	//TODO:: validate token
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
+}
+
+func errResponse(ctx *gin.Context, fallBackErr error, err error) {
+	if oauthErr.IsHandledError(err) {
+		errDefaultResponse(ctx, err)
+
+		return
+	}
+
+	ctx.JSON(http.StatusBadRequest, gin.H{
+		"error":             fallBackErr.Error(),
+		"error_description": err.Error(),
+	})
+}
+
+func errDefaultResponse(ctx *gin.Context, err error) {
+	ctx.JSON(http.StatusBadRequest, gin.H{
+		"error":             err.Error(),
+		"error_description": oauthErr.GetDescription(err),
+	})
 }
