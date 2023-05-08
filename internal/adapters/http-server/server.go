@@ -81,7 +81,7 @@ func newRouter(
 	oauthGroup := router.Group("/oauth")
 	{
 		oauthGroup.GET("/authorize", oauthHandler.Authorize)
-		oauthGroup.GET("/token", oauthHandler.Token)
+		oauthGroup.POST("/token", oauthHandler.Token)
 		oauthGroup.POST("/validate", oauthHandler.Validate)
 	}
 
