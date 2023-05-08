@@ -1,6 +1,7 @@
 package postgresql
 
 import (
+	"context"
 	"database/sql"
 
 	"github.com/gofrs/uuid"
@@ -19,7 +20,7 @@ type OauthAccessTokenRepository struct {
 	db *sql.DB
 }
 
-func (o OauthAccessTokenRepository) GetByUUID(uuid uuid.UUID) (domain.OauthAccessToken, error) {
+func (o OauthAccessTokenRepository) GetByUUID(ctx context.Context, uuid uuid.UUID) (domain.OauthAccessToken, error) {
 	//TODO implement me
 	panic("implement me")
 }

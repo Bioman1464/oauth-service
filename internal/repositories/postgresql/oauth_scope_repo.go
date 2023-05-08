@@ -1,6 +1,7 @@
 package postgresql
 
 import (
+	"context"
 	"database/sql"
 
 	"github.com/gofrs/uuid"
@@ -19,7 +20,12 @@ type OauthScopeRepository struct {
 	db *sql.DB
 }
 
-func (o OauthScopeRepository) GetByUUID(uuid uuid.UUID) (domain.OauthScope, error) {
+func (o OauthScopeRepository) Exists(ctx context.Context, scopes []string) (bool, error) {
+	//TODO implement me
+	return true, nil
+}
+
+func (o OauthScopeRepository) GetByUUID(ctx context.Context, uuid uuid.UUID) (domain.OauthScope, error) {
 	//TODO implement me
 	panic("implement me")
 }
